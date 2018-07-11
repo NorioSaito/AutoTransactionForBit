@@ -1,5 +1,8 @@
 import csv
+import pandas as pd
 
+#CSVファイルをListとして読み込む
+#データ15件の最初と最後の取引価格の差額を算出
 def input_csv():
 	csv_file = open("C:/Users/nsait/AutoTransactionForBit/data_201806701.csv", "r", encoding="ms932", errors="", newline="" )
 	#リスト形式
@@ -22,4 +25,9 @@ def input_csv():
 		count += 1
 		print(row)
 
-input_csv()
+#CSVファイルをPandasで取得
+def input_csv_byPandas():
+	data_list = pd.read_csv('C:/Users/nsait/AutoTransactionForBit/data_201806701.csv', header=None)
+	print(data_list)
+
+input_csv_byPandas()
