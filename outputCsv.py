@@ -22,15 +22,15 @@ def outputCsv(tick):
     csvlist = []
     print(tick['timestamp'])
     print(tick['ltp'])
-    csvlist.append(tick['timestamp'])
-    csvlist.append(tick['ltp'])
-    csvlist.append(tick['best_ask'])
-    csvlist.append(tick['best_bid'])
-    csvlist.append(tick['best_ask_size'])
-    csvlist.append(tick['best_bid_size'])
-    csvlist.append(tick['total_ask_depth'])
-    csvlist.append(tick['total_bid_depth'])
-    csvlist.append(tick['volume_by_product'])
+    csvlist.append(tick['timestamp'])#取得日時
+    csvlist.append(tick['ltp'])#最終取引価格
+    csvlist.append(tick['best_ask'])#最高買い価格
+    csvlist.append(tick['best_bid'])#最低売り価格
+    csvlist.append(tick['best_ask_size'])#最高買い価格の数
+    csvlist.append(tick['best_bid_size'])#最低売り価格の数
+    csvlist.append(tick['total_ask_depth'])#買い注文総数
+    csvlist.append(tick['total_bid_depth'])#売り注文総数
+    csvlist.append(tick['volume_by_product'])#価格ごとの出来高
 
 # 出力
     writer.writerow(csvlist)
