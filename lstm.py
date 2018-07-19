@@ -21,4 +21,15 @@ def inference(input_ph, istate_ph):
         weight2_var = tf.Variable(tf.truncated_nomal(
             [num_of_hidden_nodes, num_of_output_nodes], stddev=0.1), name="weight2")
         #TODOバイアスの構造を設定
-        #bias1_var = tf.Variable(tf.truncated_nomal())
+        #バイアス1は中間層へ伝達されるバイアス
+        #バイアス2は出力層へ伝達されるバイアス
+        bias1_var = tf.Variable(tf.truncated_nomal([num_of_hidden_nodes], stddev=0.1), name="bias1")
+        bias2_var = tf.Variable(tf.truncated_nomal([num_of_output_nodes], stddev=0.1), name="bias2")
+
+    #入力データの転置を行う
+    #input_phは入力データをテンソルにしたもの
+    in1 = tf.transpose(input_ph)
+    #転置したテンソルをreshapeする（reshapeってなに？）
+    in2 = tf.reshape(in1, [-1, num_of_input_nodes])
+    #TODO
+    #reshape調査（引数が何を設定するのか）
