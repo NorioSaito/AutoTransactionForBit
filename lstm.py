@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
-num_of_input_nodes = 8 #入力層のノード数（日付を抜いた要素数）
+num_of_input_nodes = 9 #入力層のノード数（日付を抜いた要素数）
 num_of_hidden_nodes = 15 #中間層のノード数（とりあえず15でのちに調整する）
 num_of_output_nodes = 3 #出力層のノード数(価格が「上がる」「下がる」「横這い」の3ユニット)
 num_of_traning_epochs = 5000 #トレーニングの繰り返し回数(過学習が起きないよう調整する)
@@ -9,6 +9,17 @@ size_of_mini_batch = 150 #ミニバッチあたりのサンプル数(15x10で設
 learning_rate = 0.01 #学習率(とりあえず0.01でやってみる)
 forget_bias = 1 #よくわからない（デフォルトが1らしい）
 num_of_sample = 7000 #データサンプル数
+
+#入力データを作成
+def create_data(data_list):
+    #csv出力したデータを行列として保持
+    X = data_list.values
+
+    #TODD
+    #正解ラベル作成
+    #価格が+500円→[1, 0, 0]
+    #価格が-500円[0, 1, 0]
+    #それ以外[0, 0, 1]
 
 #LSTMを設計する関数
 def inference(input_ph, istate_ph):
