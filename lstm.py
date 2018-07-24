@@ -15,11 +15,33 @@ def create_data(data_list):
     #csv出力したデータを行列として保持
     X = data_list.values
 
-    #TODD
-    #正解ラベル作成
-    #価格が+500円→[1, 0, 0]
-    #価格が-500円[0, 1, 0]
-    #それ以外[0, 0, 1]
+    t = np.empty(3)
+    #データ15件ごとの価格変化を算出
+	count = 0
+	ltp_start = 0
+	ltp_end = 0
+	for row in data_list.itertuples():
+		if count == 0:
+			#print(row[2])
+			ltp_start = row[2]
+			count += 1
+		elif count == 14:
+			#print(row[2])
+			ltp_end = row[2]
+			ltp_gap = ltp_end - ltp_start
+
+            #価格変化をone-hot表現で表す
+            #現時点ではなぜか[0, 0, 0]しか作れない...。
+			if ltp_gap >= 500:
+				np.vstack((t, [1, 0, 0]))
+			elif ltp_gap <= -500:
+				np.vstack((t, [0, 1, 0]))
+			else:
+				np.vstack((t, [0, 0, 1]))
+			count = 0
+		else:
+			count += 1
+    return X, t
 
 #LSTMを設計する関数
 def inference(input_ph, istate_ph):

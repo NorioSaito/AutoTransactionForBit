@@ -38,12 +38,11 @@ def input_csv_byPandas():
 	#print(data_list[1])
 
 	#データ15件ごとの価格変化を算出
+	t = np.empty(3)
+    #データ15件ごとの価格変化を算出
 	count = 0
 	ltp_start = 0
 	ltp_end = 0
-	buy_count = 0
-	sell_count = 0
-	no_count = 0
 	for row in data_list.itertuples():
 		if count == 0:
 			#print(row[2])
@@ -54,20 +53,16 @@ def input_csv_byPandas():
 			ltp_end = row[2]
 			ltp_gap = ltp_end - ltp_start
 
+			#なぜか全部[0, 0, 0]となる...。
 			if ltp_gap >= 500:
-				print("buy")
-				buy_count += 1
+				np.vstack((t, [1, 0, 0]))
 			elif ltp_gap <= -500:
-				print("sell")
-				sell_count += 1
+				np.vstack((t, [0, 1, 0]))
 			else:
-				print("notTransaction")
-				no_count += 1
+				np.vstack((t, [0, 0, 1]))
 			count = 0
 		else:
 			count += 1
-	print("buy_count", buy_count)
-	print("sell_count=", sell_count)
-	print("notTransaction=", no_count)
+		print(t)
 
 input_csv_byPandas()
