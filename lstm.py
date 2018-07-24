@@ -31,5 +31,61 @@ def inference(input_ph, istate_ph):
     in1 = tf.transpose(input_ph)
     #転置したテンソルをreshapeする（reshapeってなに？）
     in2 = tf.reshape(in1, [-1, num_of_input_nodes])
-    #TODO
-    #reshape調査（引数が何を設定するのか）
+    #入力層のノード計算
+    in3 = tf.matmul(in2, weight1_var) + bias1_var
+
+    #なにをしてるのだろう...?
+    in4 = tf.split(in3, length_ofsequences, 0)
+
+    #LSTMのCellを設定
+    cell = tf.rnn_cell.BasicLSTMCell(num_of_hidden_nodes, forget_bias=forget_bias, state_is_tuple=false)
+    rnn_output, states_op = tf.contrib.rnn.static_rnn(cell, in4, initial_state=istate_ph)
+    output_op = tf.matmul(rnn_output[-1], weight2weight2_var) + bias2_var
+
+    #データ取得のための操作
+    w1_hist = tf.summary.histogram("weights1", weight1_var)
+    w2_hist = tf.summary.histogram("weights2", weight2_var)
+    b1_hist = tf.summary.histogram("biases1", bias1_var)
+    b2_hist = tf.summary.histogram("biases2", bias2_var)
+    output_hist = tf.summary.histogram("output",  output_op)
+    results = [weight1_var, weight2_var, bias1_var,  bias2_var]
+    return output_op, states_op, results
+
+#損失関数(とりあえず2乗和誤差を用いてみる)
+def loss(output_op, supervisor_ph):
+    with tf.name_scope("loss") as scope:
+        square_error = tf.reduce_mean(tf.square(output_op))
+        loss_op = square_error
+        tf.summary.scalar("loss", loss_op)
+        return loss_op
+
+#パラメータ更新
+def traning(loss_op):
+    with tf.name_scope("traning") as scope:
+        traning_op = oprimizer.minimize(loss_op)
+        return traning_op
+
+#正解率算出
+def calc_accuracy(output_op, prints=False):
+    inputs, ts = make_prediction(num_of_prediction_epochs)
+    pred_dict = {
+        input_ph: inputs,
+        supervisor_ph: ts,
+        istate_ph:  np.zeros((num_of_prediction_epochs, num_of_hidden_nodes * 2))
+    }
+    output = sess.run([output_op], feed_dict=pred_dict)
+
+    def print_result(i, p, q):
+        [print(list(x)[0]) for x in i]
+        print("output: %f, correct: %d", %(p,d) )
+    if prints:
+        [print_result(i, p, q) for i, p, q in zip(inputs, output[0], ts)]
+
+    opt = abs(output - ts)[0]
+    total = sum([1 if x[0] < 0.05 else for x in opt])
+    print("accuracy %f" % (total / float(len(ts))))
+    return output
+
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
+
+X, t = create_data(num_of_sample, length_ofsequences)
