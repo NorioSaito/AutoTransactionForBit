@@ -30,7 +30,7 @@ def input_csv():
 
 #CSVファイルをPandasで取得
 def input_csv_byPandas():
-	data_list = pd.read_csv('C:/Users/nsait/AutoTransactionForBit/all_data.csv', header=None)
+	data_list = pd.read_csv('all_data.csv', header=None)
 	#取得したデータをグラフ描画
 	#data_list.plot()
 	#取得したデータを配列に変換
@@ -38,31 +38,30 @@ def input_csv_byPandas():
 	#print(data_list[1])
 
 	#データ15件ごとの価格変化を算出
-	t = np.empty(3)
+	t = np.zeros(3)
     #データ15件ごとの価格変化を算出
 	count = 0
 	ltp_start = 0
 	ltp_end = 0
+	label1 = np.array([1, 0 ,0])
+	label2 = np.array([0, 1, 0])
+	label3 = np.array([0, 0, 1])
 	for row in data_list.itertuples():
 		if count == 0:
-			#print(row[2])
 			ltp_start = row[2]
 			count += 1
 		elif count == 14:
-			#print(row[2])
 			ltp_end = row[2]
 			ltp_gap = ltp_end - ltp_start
-
-			#なぜか全部[0, 0, 0]となる...。
 			if ltp_gap >= 500:
-				np.vstack((t, [1, 0, 0]))
+				t = np.vstack((t, label1))
 			elif ltp_gap <= -500:
-				np.vstack((t, [0, 1, 0]))
+				t = np.vstack((t, label2))
 			else:
-				np.vstack((t, [0, 0, 1]))
+				t = np.vstack((t, label3))
 			count = 0
 		else:
 			count += 1
-		print(t)
+	return data_list, np.delete(t, 0, 0)
 
 input_csv_byPandas()
