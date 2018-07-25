@@ -18,8 +18,20 @@ n_hidden = 1
 
 #ニューラルネットワークのモデル構築
 model = Sequential()
-model.add(LSTM(n_hidden, batch_input_shape=(None, length_of_sequence, in_out_neurons), return_sequences=False))
+model.add(LSTM(length_of_sequence,return_sequences=False))
 model.add(Dense(in_out_neurons))
 model.add(Activation("linear"))
 optimizer = Adam(lr=0.001)
-model.compile(loss="binary_crossentropy,", optimizer=optimizer)
+model.compile(loss="binary_crossentropy", optimizer=optimizer)
+
+early_stopping = EarlyStopping(monitor='val_loss', mode='auto', patience=0)
+#model.fit()の第一引数はNumpy配列のリストを渡すっぽい...
+#input_dataはDataFrameのためエラー発生している？
+model.fit(input_data, t,
+          batch_size=15,
+          epochs=100,
+          validation_split=0.1,
+          callbacks=[early_stopping]
+          )
+
+predicted = model.predict(input_data)
