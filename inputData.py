@@ -34,7 +34,7 @@ def input_csv_byPandas():
 	#取得したデータをグラフ描画
 	#data_list.plot()
 	#取得したデータを配列に変換
-	#data_array = data_list.values
+	data_array = data_list.values
 	#print(data_list[1])
 
 	#データ15件ごとの価格変化を算出
@@ -62,6 +62,6 @@ def input_csv_byPandas():
 			count = 0
 		else:
 			count += 1
-	return data_list, np.delete(t, 0, 0)
+	return data_array, np.delete(t, 0, 0)
 
 input_csv_byPandas()
