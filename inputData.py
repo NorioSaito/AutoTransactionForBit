@@ -30,12 +30,11 @@ def input_csv():
 
 #CSVファイルをPandasで取得
 def input_csv_byPandas():
-	data_list = pd.read_csv('all_data.csv', header=None)
+	data_list = pd.read_csv('C:/Users/nsait/AutoTransactionForBit/all_data.csv', header=None)
 	#取得したデータをグラフ描画
 	#data_list.plot()
 	#取得したデータを配列に変換
 	data_array = data_list.values
-	#print(data_list[1])
 
 	#データ15件ごとの価格変化を算出
 	t = np.zeros(3)
