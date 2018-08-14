@@ -61,6 +61,7 @@ def input_csv_byPandas():
 			count = 0
 		else:
 			count += 1
+	#t=np.zeros(3)で[0, 0, 0]ができてしまっているため、削除して返す。
 	return data_array, np.delete(t, 0, 0)
 
 input_csv_byPandas()

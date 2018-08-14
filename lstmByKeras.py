@@ -10,7 +10,7 @@ from tensorflow.python.keras.callbacks import EarlyStopping
 #入力データを作成
 input_data, t = id.input_csv_byPandas()
 #データの個数調整
-input_data = input_data[len(input_data) % 15:]
+#input_data = input_data[len(input_data) % 15:]
 t = t[len(t) % 15:]
 print(input_data)
 #入力データの列数
@@ -20,7 +20,8 @@ in_out_neurons = 3
 #隠れ層の数
 n_hidden = 1
 #特徴量
-input_data = np.reshape(input_data, (input_data.shape[0], input_data.shape[1], 3))
+input_data = input_data[np.newaxis, :, :]
+#input_data = np.reshape(input_data, (input_data.shape[0], input_data.shape[1], 3))
 
 #ニューラルネットワークのモデル構築
 model = Sequential()
