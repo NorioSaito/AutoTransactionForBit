@@ -8,14 +8,17 @@ from tensorflow.python.keras.layers.recurrent import LSTM
 from tensorflow.python.keras.optimizers import Adam
 from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.preprocessing import MinMaxScaler
+from tensorflow.python.keras.models import model_from_json
 from matplotlib import pyplot as plt
+
+
 
 #価格データの取得
 polo = poloniex.Poloniex()
 polo.timeout = 2
 rawdata = polo.returnChartData('USDT_BTC',
                                period=300,
-                               start=time.time()-polo.DAY*180,
+                               start=time.time()-polo.DAY*10,
                                end=time.time())
 
 #データの前処理
@@ -43,23 +46,15 @@ def train_test_split(df, test_size=0.1, n_prev=50):
 
 (X_train, y_train), (X_test, y_test) = train_test_split(input_dataframe)
 
-#ニューラルネットワークモデルの作成
-in_out_neurons = 1
-hidden_neurons = 300
-length_of_sequences = 50
+#保存したモデルを読み込み
+json_string = open('keras_lstm_model.json').read()
+m = model_from_json(json_string)
 
-model = Sequential()
-model.add(LSTM(hidden_neurons, batch_input_shape=(None, length_of_sequences, in_out_neurons), return_sequences=False))
-model.add(Dense(in_out_neurons))
-model.add(Activation("linear"))
-model.compile(loss="mean_squared_error", optimizer="adam",)
+m.summary()
+m.compile(loss="mean_squared_error", optimizer="adam",)
+m.load_weights('keras_lstm_weihgts.h5')
 
-#学習の実施
-early_stopping = EarlyStopping(monitor='val_loss', mode='auto', patience=0)
-history = model.fit(X_train, y_train, batch_size=600, epochs=10, validation_split=0.1, callbacks=[early_stopping])
-
-#グラフ描画
-pred_data = model.predict(X_train)
+pred_data = m.predict(X_train)
 plt.plot(y_train, label='train')
 plt.plot(pred_data, label='pred')
 plt.legend(loc='upper left')
