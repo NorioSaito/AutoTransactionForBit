@@ -14,17 +14,13 @@ from matplotlib import pyplot as plt
 
 
 #価格データの取得
-polo = poloniex.Poloniex()
-polo.timeout = 2
-rawdata = polo.returnChartData('USDT_BTC',
-                               period=300,
-                               start=time.time()-polo.DAY*10,
-                               end=time.time())
-
-#データの前処理
-price_data = pd.DataFrame([float(i.get('open')) for i in rawdata])
+input_data = pd.read_csv('data_of_pred.csv', header=None)
+#データの個数調整
+##input_data = input_data[len(input_data) % 15:]
+#t = t[len(t) % 15:]
+price_data = pd.DataFrame(input_data)
 mss = MinMaxScaler()
-input_dataframe = pd.DataFrame(mss.fit_transform(price_data))
+input_dataFrame = pd.DataFrame(mss.fit_transform(price_data))
 
 #訓練データと検証データの分割
 def _load_data(data, n_prev=50):
@@ -44,18 +40,27 @@ def train_test_split(df, test_size=0.1, n_prev=50):
     X_test, y_test = _load_data(df.iloc[ntrn:], n_prev)
     return (X_train, y_train), (X_test, y_test)
 
-(X_train, y_train), (X_test, y_test) = train_test_split(input_dataframe)
+(X_train, y_train), (X_test, y_test) = train_test_split(input_dataFrame)
 
 #保存したモデルを読み込み
-json_string = open('keras_lstm_model.json').read()
-m = model_from_json(json_string)
+def model_read(input_data):
+    price_data = pd.DataFrame(input_data)
+    mss = MinMaxScaler()
+    input_dataFrame = pd.DataFrame(mss.fit_transform(price_data))
 
-m.summary()
-m.compile(loss="mean_squared_error", optimizer="adam",)
-m.load_weights('keras_lstm_weihgts.h5')
+    (X_train, y_train), (X_test, y_test) = train_test_split(input_dataFrame)
 
-pred_data = m.predict(X_train)
-plt.plot(y_train, label='train')
-plt.plot(pred_data, label='pred')
-plt.legend(loc='upper left')
-plt.show()
+    json_string = open('keras_lstm_model.json').read()
+    m = model_from_json(json_string)
+
+    m.summary()
+    m.compile(loss="mean_squared_error", optimizer="adam",)
+    m.load_weights('keras_lstm_weihgts.h5')
+
+    pred_data = m.predict(X_train)
+    plt.plot(y_train[:,0], label='train')
+    plt.plot(pred_data, label='pred')
+    plt.legend(loc='upper left')
+    plt.show()
+
+model_read(input_data)
