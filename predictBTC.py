@@ -17,7 +17,7 @@ rawdata = polo.returnChartData('USDT_BTC',
                                period=300,
                                start=time.time()-polo.DAY*180,
                                end=time.time())
-
+print(rawdata)
 #データの前処理
 price_data = pd.DataFrame([float(i.get('open')) for i in rawdata])
 mss = MinMaxScaler()
