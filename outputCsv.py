@@ -33,7 +33,8 @@ def outputCsv(tick):
     csvlist = []
     print(tick['timestamp'])
     print(tick['ltp'])
-    csvlist.append(tick['timestamp'])#取得日時
+    #取得日時をデータに入れると標準偏差を求める時にエラーが起きるのでコメントアウト
+    #csvlist.append(tick['timestamp'])#取得日時
     csvlist.append(tick['ltp'])#最終取引価格
     csvlist.append(tick['best_ask'])#最高買い価格
     csvlist.append(tick['best_bid'])#最低売り価格
